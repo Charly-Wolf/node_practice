@@ -7,6 +7,8 @@
   "scripts": {
     "dev": "node --watch ./app.js",
     "start": "node app.js",
+    "start:mysql": "node server-with-mysql",
+    "start:local": "node server-local",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
