@@ -1,13 +1,14 @@
-import mysql from 'mysql2';
+import mysql from 'mysql2/promise';
 
 const config = {
   host: 'localhost',
   user: 'user',
+  port: '3306',
   password: '',
   database: 'moviesdb',
 };
 
-const connection = mysql.createConnection(config);
+const connection = await mysql.createConnection(config);
 
 export class MovieModel {
   static async getAll({ genre }) {}
