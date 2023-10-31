@@ -54,7 +54,39 @@ export class MovieModel {
     return movies[0];
   }
 
-  static async create({ input }) {}
+  static async create({ input }) {
+    const {
+      genre: genreInput,
+      title,
+      year,
+      director,
+      duration,
+      poster,
+      rate,
+    } = input;
+
+    const [uuidResult] = await connection.query('SELECT UUID() uuid;');
+    const [{ uuid }] = uuidResult;
+
+    try {
+      await connection.query(
+        `INSERT INTO movie (id, title, year, director, duration, poster, rate) 
+          VALUES (UUID_TO_BIN("${uuid}"), ?, ?, ?, ?, ?, ?);`,
+        [title, year, director, duration, poster, rate]
+      );
+    } catch (e) {
+      // This error should not be displayed to users - sensitive info
+      throw new Error('Error creating movie');
+      // Send trace to a intern service - sendLog(e)
+    }
+
+    const [movies] = await connection.query(
+      `SELECT BIN_TO_UUID(id) id, title, year, director, duration, poster, rate
+        FROM movie WHERE id = UUID_TO_BIN("${uuid}")`
+    );
+
+    return movies[0];
+  }
 
   static async delete({ id }) {}
 
