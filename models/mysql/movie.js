@@ -29,7 +29,8 @@ export class MovieModel {
 
       // get all movies ids from database table
       const [moviesByGenre] = await connection.query(
-        'SELECT BIN_TO_UUID(m.id) id, title, year, director, duration, poster, rate FROM movie m JOIN movie_genres mg ON m.id = mg.movie_id JOIN genre g ON mg.genre_id = g.id WHERE g.id = ?', [id]
+        'SELECT BIN_TO_UUID(m.id) id, title, year, director, duration, poster, rate FROM movie m JOIN movie_genres mg ON m.id = mg.movie_id JOIN genre g ON mg.genre_id = g.id WHERE g.id = ?',
+        [id]
       );
 
       return moviesByGenre;
@@ -42,7 +43,16 @@ export class MovieModel {
     return movies;
   }
 
-  static async getById({ id }) {}
+  static async getById({ id }) {
+    const [movies] = await connection.query(
+      'SELECT BIN_TO_UUID(id) id, title, year, director, duration, poster, rate FROM movie WHERE id = UUID_TO_BIN(?);',
+      [id]
+    );
+
+    if (movies.length === 0) return null;
+
+    return movies[0];
+  }
 
   static async create({ input }) {}
 
